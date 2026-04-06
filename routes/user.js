@@ -7,8 +7,7 @@ import { Permission } from '../config/roles.js';
 
 const Guard = [authorization,rolecheckservice];
 const router = express.Router();
-//router.post('/create',Guard,authorize(Permission.CREATE_USER),createUser);
-router.post('/create',createUser);
+router.post('/create',Guard,authorize(Permission.CREATE_USER),createUser);
 
 router.patch('/updaterole/:id',Guard,authorize(Permission.CHANGE_ROLE),updaterole);
 
