@@ -1,8 +1,8 @@
-import { totalExpense, totalIncome, AllcategoryExpense, AllcategoryIncome,recentActivity, monthlyTrends, categoryIncome } from "../services/aggregate_service.js"
+import { totalExpense, totalIncome, AllcategoryExpense, AllcategoryIncome,recentActivity, monthlyTrends, categoryIncome, categoryExpense } from "../services/aggregate_service.js"
 export const incomeTotal = async (req, res) => {
     try {
         const total = await totalIncome();
-        return res.status(200).json({ success: true, message: "Total Income!", data: total })
+        return res.status(200).json({ success: true, message: "Total Income!", amount: total })
     }
     catch (err) {
         return res.status(500).json({ success: false, message: 'Internal Server Error!', error: err.message })
@@ -12,7 +12,7 @@ export const incomeTotal = async (req, res) => {
 export const expenseTotal = async (req, res) => {
     try {
         const total = await totalExpense();
-        return res.status(200).json({ success: true, message: "Total Expense!", data: total })
+        return res.status(200).json({ success: true, message: "Total Expense!", amount: total })
     }
     catch (err) {
         return res.status(500).json({ success: false, message: 'Internal Server Error!', error: err.message })
@@ -24,7 +24,7 @@ export const AllexpenseCategory = async (req, res) => {
         const page = req.query.page || 1;
         const limit = req.query.limit || 10;
         const data = await AllcategoryExpense(page,limit);
-        return res.status(200).json({ success: true, message: `Total ${data[0].category} Expense!`, result: data })
+        return res.status(200).json({ success: true, message: `Total $Expense!`, result: data })
     }
     catch (err) {
         return res.status(500).json({ success: false, message: 'Internal Server Error!', error: err.message })
@@ -36,7 +36,7 @@ export const AllincomeCategory = async (req, res) => {
         const page = req.query.page || 1;
         const limit = req.query.limit || 10;
         const data = await AllcategoryIncome(page,limit);
-        return res.status(200).json({ success: true, message: `Total ${data[0].category} Income!`, result: data })
+        return res.status(200).json({ success: true, message: `Total Income!`, result: data })
     }
     catch (err) {
         return res.status(500).json({ success: false, message: 'Internal Server Error!', error: err.message })
@@ -47,9 +47,9 @@ export const expenseCategory = async (req, res) => {
     try {
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 10;
-        const category = req.body.category;
-        const data = await AllcategoryExpense(category,page,limit);
-        return res.status(200).json({ success: true, message: `Total ${data[0].category} Expense!`, result: data })
+        const category = req.query.category;
+        const data = await categoryExpense(category,page,limit);
+        return res.status(200).json({ success: true, message: `Total  Expense!`, result: data })
     }
     catch (err) {
         return res.status(500).json({ success: false, message: 'Internal Server Error!', error: err.message })
@@ -92,8 +92,10 @@ export const activityRecent = async(req,res)=>{
 
 export const netIncome = async(req,res)=>{
     try{
-        const netIncome = incomeTotal - expenseTotal;
-        return res.status(200).json({success:true,message:'You net Income!',result : netIncome});
+        const income = await totalIncome();
+        const expense = await totalExpense();
+        const netIncome = income - expense;
+        return res.status(200).json({success:true,message:'You net Income!',TotalIncome : netIncome});
     }
     catch(err)
     {

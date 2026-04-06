@@ -125,7 +125,7 @@ export const categoryExpense = async (category, page, limit) => {
         const skip = (page - 1) * limit;
         const result = await recordmodel.aggregate([
             {
-                $match: { type: 'expense', category: category?.trim() },
+                $match: { type: 'expense', ...(category && { category: category.trim() })  },
 
             },
             {
@@ -152,7 +152,7 @@ export const categoryExpense = async (category, page, limit) => {
             }
         ])
         if (result.length === 0) {
-            return null;
+            return []
         }
         return result;
     }
@@ -166,7 +166,7 @@ export const categoryIncome = async (category, page, limit) => {
     try {
       
         const skip = (page - 1) * limit;
-        console.log(skip)
+        
         const result = await recordmodel.aggregate([
             {
                 $match: { type: 'income', ...(category && { category: category.trim() }) }

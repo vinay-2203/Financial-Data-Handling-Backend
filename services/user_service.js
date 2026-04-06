@@ -39,7 +39,7 @@ export const userDelete = async (Id) => {
 }
 
 export const changerole = async (data, Id) => {
-    const result = await Usermodel.findOneAndUpdate(Id, { role: data }, { new: true });
+    const result = await Usermodel.findByIdAndUpdate(Id, { role: data }, { new: true });
     if (!result) {
         throw new Error("User not found!")
     }
@@ -48,7 +48,7 @@ export const changerole = async (data, Id) => {
 
 export const statusUpdate = async (data, Id) => {
     const toggle = data.status;
-    const result = await Usermodel.findOneAndUpdate(Id, { status: toggle }, { new: true });
+    const result = await Usermodel.findByIdAndUpdate(Id, { status: toggle }, { new: true });
     if (!result) {
         throw new Error('User not Found!');
     }

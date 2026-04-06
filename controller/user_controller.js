@@ -40,14 +40,18 @@ export const updaterole = async (req, res) => {
     try {
         const Id = req.params.id;
         let data = req.body.role;
+        
 
         if (!data) {
             return res.status(400).json({ success: false, message: 'Role is required!' });
         }
 
         const allowedroles = ['admin', 'viewer', 'analyst'];
+        if (data) {
+            data = data.trim().toLowerCase();
+        }
 
-        data = data.trim().toLowerCase();
+
 
         if (!allowedroles.includes(data)) {
             return res.status(400).json({ success: false, message: "Bad Request!" })
@@ -57,6 +61,7 @@ export const updaterole = async (req, res) => {
         return res.status(200).json({ success: true, message: 'Role updated Successfully!' });
     }
     catch (err) {
+        console.log(err)
         return res.status(500).json({ success: false, message: 'Internal Server Error!' });
     }
 }
@@ -65,6 +70,7 @@ export const statuschange = async (req, res) => {
     try {
         const data = req.body;
         const recordId = req.params.id;
+        console.log(data,recordId)
         const allowedStatus = ['active', 'inactive'];
         if (!allowedStatus.includes(data.status.trim().toLowerCase())) {
             return res.status(400).json({ message: 'Bad Request!' })
@@ -77,19 +83,18 @@ export const statuschange = async (req, res) => {
     }
 }
 
-export const Allusers = async(req,res)=>{
-    try{
-       
+export const Allusers = async (req, res) => {
+    try {
+
         const page = req.query.page || 1;
         const limit = req.query.limit || 10;
-        const result = await showAlluser(page,limit);
-        if(result.totalUsers === 0){
-            return res.status(200).json({success:true, message: 'Users not exist!'})
+        const result = await showAlluser(page, limit);
+        if (result.totalUsers === 0) {
+            return res.status(200).json({ success: true, message: 'Users not exist!' })
         }
-        return res.status(200).json({success:true,message:'All user list!',result:result});
+        return res.status(200).json({ success: true, message: 'All user list!', result: result });
     }
-    catch(err)
-    {
-        return res.status(500).json({success:false,message:'Error in All user service',error:err.message});
+    catch (err) {
+        return res.status(500).json({ success: false, message: 'Error in All user service', error: err.message });
     }
 }
